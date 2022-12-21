@@ -8,23 +8,74 @@
  }
  });
 </script>
-# Transform Propositional Logic expression to Conjugate Normal Form and Disjunction Normal Form.
+
+# Transform Propositional Logic expression to Conjugate Normal Form and Disjunction Normal Form
+
 This crate translate propositional logic expression to CNF and DNF. You can use result of translatation via Debug trait.
+Debug trait implemented to emit $ \LaTeX,\KaTeX$ form.
 This crate recursively transform propositional logic expression .
 
-## Step to transform.
+## Step to transform
 
-* Step1 Eliminate Top and Bottom
-
+* Step1 Eliminate Top and Bottom.
+using these rules.
+  * $ \bot \simeq A\land \lnot A$
+  * $ \top \simeq A\lor \lnot A$
 * Step2 Eliminate Iff expression
-
+using this rule.
+  * $ A \leftrightarrow B \simeq (A\to B)\land(B\to A)$
 * Step3 Eliminate Implies expression
-
+using this rule.
+  * $ A\to B \simeq (\lnot A \lor B)$  
 * Step4 Using De morgan's law to remove outer not
+  using these rules.
+  * $ \lnot(A\lor B) \simeq (\lnot A \land \lnot B) $
+  * $ \lnot(A\land B) \simeq (\lnot A\lor \lnot B)$
+* Step5 eliminate double not.
+  using this rule.
+  * $ \lnot\lnot A \simeq A$
+* Step6-$\alpha$ transform to DNF.
+  using these rules.
+  * $ A \lor (B \land C) \simeq (A\lor B)\land(A\lor C) $
+  * $(A\land B )\lor  C \simeq (A\lor C)\land(B\lor C) $
+* Step6-$\beta$ transform to CNF.
+  using these rules.
+  * $ A \land (B \lor C) \simeq (A\land B)\lor(A\land C) $
+  * $(A\lor B )\land  C \simeq (A\land C)\lor(B\land C) $
+* Step7 simplyfy.
+  using $\top$ and $\bot$ rule to simplyfy expression.
 
-* Step5 Using $ \lnot \lnot A \simeq A $ to get literal.
+## Example
 
-* Step6-$\alpha$ Using $ A \lor (B \land C) \simeq (A\lor B)\land(A\lor C)  ,$ to transform DNF
- 
-* Step6-$\beta$ Using $ A \land (B \lor C) \simeq (A\land B)\lor(A\land C)  $ to transform CNF
- 
+```rust
+    impl IntoExpression<char> for char {
+        fn into(self) -> Box<Expression<char>> {
+            var(self)
+        }
+    }
+    fn main(){
+        let exp = implies(!!var('P'), 'Q');
+        assert_eq!(exp.transform_to_cnf(), !var('P') | 'Q');
+    }
+```
+
+## Including result to documents
+
+### $\LaTeX$
+
+in preamble we need to import amssmyb and amsmath.
+
+```latex
+\usepackage{amssymb}
+\usepackage{amsmath}
+```
+
+### Markdown
+
+we need to use $\KaTeX$ or MathJax. insert these snippet to your first line.
+
+```html
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+<script type="text/x-mathjax-config">
+```

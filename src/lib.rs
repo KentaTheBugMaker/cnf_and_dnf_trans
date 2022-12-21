@@ -314,27 +314,6 @@ where
     }
 }
 //implement some operators for convinience
-impl<P> std::ops::BitOr<Box<Expression<P>>> for Box<Expression<P>>
-where
-    P: Eq,
-{
-    type Output = Box<Expression<P>>;
-
-    fn bitor(self, rhs: Box<Expression<P>>) -> Self::Output {
-        or(self, rhs)
-    }
-}
-
-impl<P> std::ops::BitAnd<Box<Expression<P>>> for Box<Expression<P>>
-where
-    P: Eq,
-{
-    type Output = Box<Expression<P>>;
-
-    fn bitand(self, rhs: Box<Expression<P>>) -> Self::Output {
-        and(self, rhs)
-    }
-}
 
 impl<P> std::ops::Not for Box<Expression<P>>
 where
@@ -374,14 +353,33 @@ impl<P: Eq> IntoExpression<P> for Box<Expression<P>> {
     }
 }
 
+impl IntoExpression<char> for char {
+    fn into(self) -> Box<Expression<char>> {
+        var(self)
+    }
+}
+impl<P: Eq, T: IntoExpression<P>> std::ops::BitAnd<T> for Box<Expression<P>> {
+    type Output = Box<Expression<P>>;
+
+    fn bitand(self, rhs: T) -> Self::Output {
+        and(self, rhs)
+    }
+}
+impl<P: Eq, T: IntoExpression<P>> std::ops::BitOr<T> for Box<Expression<P>> {
+    type Output = Box<Expression<P>>;
+
+    fn bitor(self, rhs: T) -> Self::Output {
+        or(self, rhs)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
     fn it_works() {
-        let exp = implies(not(not(var('P'))), var('Q'));
-
-        assert_eq!(exp.transform_to_cnf(), or(not(var('P')), var('Q')));
+        let exp = implies(!!var('P'), 'Q');
+        assert_eq!(exp.transform_to_cnf(), !var('P') | 'Q');
         let exp = implies(implies(var('P'), var('Q')), implies(var('R'), var('S')));
         println!("Transforming to CNF");
         exp.clone().transform_to_cnf();
