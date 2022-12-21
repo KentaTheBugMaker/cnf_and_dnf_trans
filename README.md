@@ -1,7 +1,7 @@
 # Transform Propositional Logic expression to Conjugate Normal Form and Disjunction Normal Form
 
 This crate translate propositional logic expression to CNF and DNF. You can use result of translatation via Debug trait.
-Debug trait implemented to emit $\LaTeX,\KaTeX$ form.
+Debug trait implemented to emit $\LaTeX$ form.
 This crate recursively transform propositional logic expression .
 
 ## Step to transform
@@ -23,11 +23,11 @@ using this rule.
 * Step5 eliminate double not.
   using this rule.
   * $\lnot\lnot A \simeq A$
-* Step6-$\alpha$ transform to DNF.
+* Step6- $\alpha$ transform to DNF.
   using these rules.
   * $A \lor (B \land C) \simeq (A\lor B)\land(A\lor C) $
   * $(A\land B )\lor  C \simeq (A\lor C)\land(B\lor C) $
-* Step6-$\beta$ transform to CNF.
+* Step6- $\beta$ transform to CNF.
   using these rules.
   * $A \land (B \lor C) \simeq (A\land B)\lor(A\land C) $
   * $(A\lor B )\land  C \simeq (A\land C)\lor(B\land C) $
