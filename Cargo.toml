@@ -1,0 +1,10 @@
+[package]
+name = "cnf_and_dnf_trans"
+version = "0.1.0"
+edition = "2021"
+description = "A library transform to Conjugate Normal Form or Disjunction Normal Form"
+readme="README.md"
+license="MIT OR APACHE-2.0"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
